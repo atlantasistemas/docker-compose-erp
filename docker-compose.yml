@@ -1,0 +1,27 @@
+version: '2'
+services:
+  api:
+    image: atlantasistemas/atlapi:${API_VERSION}
+    restart: always
+    environment:
+      - SERVER_DB_PORT=${SERVER_DB_PORT}
+      - SERVER_DB_USER=${SERVER_DB_USER}
+      - SERVER_DB_DATABASE=${SERVER_DB_DATABASE}
+      - SERVER_DB_PASSWORD=${SERVER_DB_PASSWORD}
+      - SERVER_DB_HOST=${SERVER_DB_HOST}
+      - TZ=America/Sao_Paulo
+    volumes:
+      - ./log/logsetting:/app/logsetting/
+      - ./log/data:/app/logs/
+    ports:
+      - ${API_PORTA_EXTERNA}:8080
+  frontend:
+    image: atlantasistemas/atlfrontend:${FRONTEND_VERSION}
+    restart: always
+    environment:
+      - HOST_API=${API_HOST_EXTERNO}:${API_PORTA_EXTERNA}
+      - TOKEN=${API_TOKEN}
+    ports:
+      - ${FRONTEND_PORTA_EXTERNA}:80
+    depends_on:
+      - api
